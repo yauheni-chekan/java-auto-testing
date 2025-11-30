@@ -1,5 +1,13 @@
 package com.example;
 
+import com.example.dto.AnalysisResult;
+import com.example.dto.Line;
+import com.example.dto.LineSegment;
+import com.example.dto.Point;
+import com.example.dto.RelativePosition;
+import com.example.logic.GeometryUtils;
+import com.example.reporting.ConsoleTableReportFormatter;
+import com.example.reporting.ReportFormatter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -13,6 +21,7 @@ import java.util.Scanner;
  */
 public class LineSegmentAnalyzer {
     private static final Logger logger = LoggerFactory.getLogger(LineSegmentAnalyzer.class);
+    private static final double EPSILON = 1e-9;
 
     public static void main(String[] args) {
         logger.info("Starting Line Segment Intersection Analysis");
@@ -36,78 +45,26 @@ public class LineSegmentAnalyzer {
             logger.info("Second point entered: {}", p2);
             
             // Create line and segment
-            Line line = new Line();
+            // The specific line is -3x + 5y - 2 = 0
+            Line line = new Line(-3.0, 5.0, -2.0);
             LineSegment segment = new LineSegment(p1, p2);
             
-            logger.info("Line equation: {}", line.getEquation());
-            logger.info("Line segment equation: {}", segment.getLineEquationString());
+            logger.info("Line equation: {}", GeometryUtils.getEquationString(line));
+            logger.info("Line segment equation: {}", GeometryUtils.getLineEquationString(segment));
             logger.info("Line segment: {}", segment);
             
-            // Determine relative position
-            LineSegment.RelativePosition position = segment.getRelativePosition(line);
-            
-            // Output results as table
-            printAnalysisTable(line, segment, p1, p2, position);
-            
-            // Also output detailed results
-            System.out.println("\n=== Detailed Analysis ===");
-            System.out.println("Line equation: " + line.getEquation());
-            System.out.println("Line segment: from " + p1 + " to " + p2);
-            System.out.println();
-            
-            switch (position) {
-                case PARALLEL:
-                    System.out.println("Result: Line and segment are parallel");
-                    break;
-                    
-                case NO_INTERSECTION:
-                    System.out.println("Result: No intersection");
-                    System.out.println("The segment lies entirely on one side of the line.");
-                    break;
-                    
-                case SEGMENT_ON_LINE:
-                    System.out.println("Result: Segment lies entirely on the line");
-                    System.out.println("Both endpoints are on the line.");
-                    break;
-                    
-                case ONE_ENDPOINT_ON_LINE:
-                    System.out.println("Result: Segment has one endpoint on the line");
-                    if (line.isPointOnLine(p1)) {
-                        System.out.println("Endpoint P1 " + p1 + " lies on the line.");
-                    }
-                    if (line.isPointOnLine(p2)) {
-                        System.out.println("Endpoint P2 " + p2 + " lies on the line.");
-                    }
-                    break;
-                    
-                case ONE_INTERSECTION:
-                    System.out.println("Result: One intersection point");
-                    
-                    // Find intersection point
-                    Point intersection = segment.findIntersectionPoint(line);
-                    if (intersection != null) {
-                        System.out.println("Intersection point: " + intersection);
-                        
-                        // Check perpendicularity
-                        boolean isPerpendicular = segment.isPerpendicularTo(line);
-                        System.out.println("Are line and segment mutually perpendicular? " + 
-                                         (isPerpendicular ? "Yes" : "No"));
-                        
-                        // Check if any endpoint belongs to the line
-                        boolean p1OnLine = segment.isEndpointOnLine(line, p1);
-                        boolean p2OnLine = segment.isEndpointOnLine(line, p2);
-                        
-                        System.out.println("Does endpoint P1 " + p1 + " belong to the line? " + 
-                                         (p1OnLine ? "Yes" : "No"));
-                        System.out.println("Does endpoint P2 " + p2 + " belong to the line? " + 
-                                         (p2OnLine ? "Yes" : "No"));
-                    } else {
-                        System.out.println("Could not calculate intersection point (parallel case).");
-                    }
-                    break;
-            }
+            // Perform all analysis and collect results into a DTO
+            AnalysisResult result = analyzeAndCollectResults(line, segment, p1, p2);
             
             logger.info("Analysis completed successfully");
+            
+            // Generate report using Strategy pattern
+            ReportFormatter formatter = new ConsoleTableReportFormatter();
+            String report = formatter.format(result);
+            
+            // Print final results table at the end
+            System.out.println("\n\n");
+            System.out.print(report);
             
         } catch (Exception e) {
             logger.error("Error during analysis", e);
@@ -119,38 +76,19 @@ public class LineSegmentAnalyzer {
     }
 
     /**
-     * Prints the analysis results in a formatted table.
-     * 
-     * @param line The given line
-     * @param segment The line segment
-     * @param p1 First endpoint
-     * @param p2 Second endpoint
-     * @param position The relative position
+     * Performs all analysis calculations and registers results into the result DTO.
+     * All domain logic and calculations happen here.
      */
-    private static void printAnalysisTable(Line line, LineSegment segment, Point p1, Point p2, 
-                                          LineSegment.RelativePosition position) {
-        System.out.println("\n" + "=".repeat(70));
-        System.out.println("ANALYSIS RESULTS TABLE");
-        System.out.println("=".repeat(70));
+    private static AnalysisResult analyzeAndCollectResults(Line line, LineSegment segment, Point p1, Point p2) {
+        AnalysisResult.Builder builder = new AnalysisResult.Builder();
         
-        // Table header
-        String separator = "-".repeat(70);
-        System.out.println(separator);
+        // Register basic information
+        builder.setLineEquation(GeometryUtils.getEquationString(line))
+               .setSegmentEndpoints(p1.toString(), p2.toString())
+               .setSegmentLineEquation(GeometryUtils.getLineEquationString(segment));
         
-        // Line information
-        System.out.printf("%-30s | %-37s%n", "Given Line Equation", line.getEquation());
-        System.out.println(separator);
-        
-        // Segment endpoints
-        System.out.printf("%-30s | P1: %-30s%n", "Segment Endpoints", p1.toString());
-        System.out.printf("%-30s | P2: %-30s%n", "", p2.toString());
-        System.out.println(separator);
-        
-        // Segment line equation
-        System.out.printf("%-30s | %-37s%n", "Segment Line Equation", segment.getLineEquationString());
-        System.out.println(separator);
-        
-        // Relative position
+        // Calculate and register relative position
+        RelativePosition position = GeometryUtils.getRelativePosition(segment, line);
         String positionStr = switch (position) {
             case PARALLEL -> "Parallel";
             case NO_INTERSECTION -> "No Intersection";
@@ -158,64 +96,53 @@ public class LineSegmentAnalyzer {
             case ONE_ENDPOINT_ON_LINE -> "One endpoint on line";
             case ONE_INTERSECTION -> "One intersection point";
         };
-        System.out.printf("%-30s | %-37s%n", "Relative Position", positionStr);
-        System.out.println(separator);
+        builder.setRelativePosition(positionStr);
         
-        // Additional details based on position
-        switch (position) {
-            case ONE_INTERSECTION:
-                Point intersection = segment.findIntersectionPoint(line);
-                if (intersection != null) {
-                    System.out.printf("%-30s | %-37s%n", "Intersection Point", intersection.toString());
-                    System.out.println(separator);
-                    
-                    boolean isPerpendicular = segment.isPerpendicularTo(line);
-                    System.out.printf("%-30s | %-37s%n", "Mutually Perpendicular", 
-                                    isPerpendicular ? "Yes" : "No");
-                    System.out.println(separator);
-                }
-                break;
-                
-            case ONE_ENDPOINT_ON_LINE:
-                boolean p1OnLine = line.isPointOnLine(p1);
-                boolean p2OnLine = line.isPointOnLine(p2);
-                if (p1OnLine) {
-                    System.out.printf("%-30s | P1 %-33s%n", "Endpoint on Line", p1.toString());
-                    System.out.println(separator);
-                }
-                if (p2OnLine) {
-                    System.out.printf("%-30s | P2 %-33s%n", "Endpoint on Line", p2.toString());
-                    System.out.println(separator);
-                }
-                break;
-                
-            case SEGMENT_ON_LINE:
-                System.out.printf("%-30s | Both P1 and P2%n", "Endpoints on Line", "");
-                System.out.println(separator);
-                break;
-                
-            case PARALLEL:
-            case NO_INTERSECTION:
-                // No additional details needed for these cases
-                break;
+        // Calculate and register intersection point (if applicable)
+        if (position == RelativePosition.ONE_INTERSECTION) {
+            Point intersection = GeometryUtils.findIntersectionPoint(segment, line);
+            if (intersection != null) {
+                builder.setIntersectionPoint(intersection.toString());
+            }
         }
         
-        // Endpoint positions relative to line
-        double f1 = line.evaluate(p1);
-        double f2 = line.evaluate(p2);
-        String p1Position = Math.abs(f1) < 1e-9 ? "On line" : (f1 > 0 ? "Above/Right" : "Below/Left");
-        String p2Position = Math.abs(f2) < 1e-9 ? "On line" : (f2 > 0 ? "Above/Right" : "Below/Left");
+        // Calculate and register endpoint on line (if applicable)
+        boolean p1OnLine = GeometryUtils.isPointOnLine(line, p1);
+        boolean p2OnLine = GeometryUtils.isPointOnLine(line, p2);
         
-        System.out.printf("%-30s | P1: %-33s%n", "Endpoint Positions", p1Position + " (f=" + String.format("%.4f", f1) + ")");
-        System.out.printf("%-30s | P2: %-33s%n", "", p2Position + " (f=" + String.format("%.4f", f2) + ")");
-        System.out.println(separator);
+        if (position == RelativePosition.SEGMENT_ON_LINE) {
+            builder.setEndpointOnLine("Both P1 and P2");
+        } else if (position == RelativePosition.ONE_ENDPOINT_ON_LINE) {
+            if (p1OnLine && p2OnLine) {
+                builder.setEndpointOnLine("Both P1 and P2");
+            } else if (p1OnLine) {
+                builder.setEndpointOnLine("P1 " + p1);
+            } else if (p2OnLine) {
+                builder.setEndpointOnLine("P2 " + p2);
+            }
+        }
         
-        // Parallel and perpendicular checks
-        boolean isParallel = segment.isParallelTo(line);
-        boolean isPerpendicular = segment.isPerpendicularTo(line);
-        System.out.printf("%-30s | %-37s%n", "Parallel to Line", isParallel ? "Yes" : "No");
-        System.out.println(separator);
-        System.out.printf("%-30s | %-37s%n", "Perpendicular to Line", isPerpendicular ? "Yes" : "No");
-        System.out.println("=".repeat(70));
+        // Calculate and register endpoint positions relative to line
+        double f1 = GeometryUtils.evaluate(line, p1);
+        double f2 = GeometryUtils.evaluate(line, p2);
+        String p1Position = formatEndpointPosition(f1);
+        String p2Position = formatEndpointPosition(f2);
+        builder.setEndpointPositions(p1Position, p2Position);
+        
+        // Calculate and register parallel/perpendicular status
+        boolean isParallel = GeometryUtils.isParallelTo(segment, line);
+        boolean isPerpendicular = GeometryUtils.isPerpendicularTo(segment, line);
+        builder.setParallel(isParallel)
+               .setPerpendicular(isPerpendicular);
+        
+        return builder.build();
+    }
+
+    /**
+     * Formats the endpoint position based on line evaluation value.
+     */
+    private static String formatEndpointPosition(double f) {
+        String side = Math.abs(f) < EPSILON ? "On line" : (f > 0 ? "Above/Right" : "Below/Left");
+        return side + " (f=" + String.format("%.4f", f) + ")";
     }
 }
