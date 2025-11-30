@@ -13,5 +13,5 @@
     </root>
 
     <!-- Application Logger - DEBUG level for detailed calculations -->
-    <logger name="com.example" level="DEBUG" />
+    <logger name="com.example" level="INFO" />
 </configuration>
