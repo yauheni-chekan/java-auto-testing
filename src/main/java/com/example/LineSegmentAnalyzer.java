@@ -11,6 +11,7 @@ import com.example.reporting.ReportFormatter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.util.InputMismatchException;
 import java.util.Scanner;
 
 /**
@@ -32,18 +33,18 @@ public class LineSegmentAnalyzer {
         try {
             // Read first point
             System.out.println("Enter the first point (x1 y1):");
-            double x1 = scanner.nextDouble();
-            double y1 = scanner.nextDouble();
+            double x1 = scanner.nextInt();
+            double y1 = scanner.nextInt();
             Point p1 = new Point(x1, y1);
             logger.info("First point entered: {}", p1);
             
             // Read second point
             System.out.println("Enter the second point (x2 y2):");
-            double x2 = scanner.nextDouble();
-            double y2 = scanner.nextDouble();
+            double x2 = scanner.nextInt();
+            double y2 = scanner.nextInt();
             Point p2 = new Point(x2, y2);
             logger.info("Second point entered: {}", p2);
-            
+
             // Create line and segment
             // The specific line is -3x + 5y - 2 = 0
             Line line = new Line(-3.0, 5.0, -2.0);
@@ -65,7 +66,8 @@ public class LineSegmentAnalyzer {
             // Print final results table at the end
             System.out.println("\n\n");
             System.out.print(report);
-            
+        } catch (InputMismatchException e) {
+            logger.error("Input values must be integers");
         } catch (Exception e) {
             logger.error("Error during analysis", e);
             System.err.println("Error: " + e.getMessage());
