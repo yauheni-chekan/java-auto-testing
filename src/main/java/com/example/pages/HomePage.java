@@ -2,9 +2,10 @@ package com.example.pages;
 
 import com.example.pages.components.FooterComponent;
 import com.example.pages.components.HeaderComponent;
-import com.example.utils.WaitUtils;
 import com.microsoft.playwright.Locator;
 import com.microsoft.playwright.Page;
+import com.microsoft.playwright.options.AriaRole;
+
 import io.qameta.allure.Step;
 
 /**
@@ -53,11 +54,11 @@ public class HomePage extends BasePage {
     }
 
     private Locator getViewPlansButton() {
-        return page.locator("a:text-matches('View.*Plans.*|See.*Plans.*', 'i'), button:text-matches('View.*Plans.*', 'i')").first();
+        return page.getByRole(AriaRole.LINK, new Page.GetByRoleOptions().setName("View Plans & Pricing")).first();
     }
 
     private Locator getTalkWithExpertButton() {
-        return page.locator("a:text-matches('Talk.*Expert.*', 'i'), button:text-matches('Talk.*Expert.*', 'i')").first();
+        return page.getByRole(AriaRole.LINK, new Page.GetByRoleOptions().setName("Talk with an Expert")).first();
     }
 
     private Locator getHostingPlansSection() {
@@ -98,10 +99,6 @@ public class HomePage extends BasePage {
 
     private Locator getChatWithUsButton() {
         return page.locator("a:text-matches('Chat.*Us.*', 'i'), button:text-matches('Chat.*Us.*', 'i')").first();
-    }
-
-    private Locator getComparePlansButtons() {
-        return page.locator("a:text-matches('Compare.*Plans.*', 'i'), button:text-matches('Compare.*Plans.*', 'i')");
     }
 
     @Override
@@ -199,15 +196,6 @@ public class HomePage extends BasePage {
     }
 
     /**
-     * Scrolls to the hosting plans section.
-     */
-    @Step("Scroll to hosting plans")
-    public void scrollToHostingPlans() {
-        logger.info("Scrolling to hosting plans section");
-        scrollIntoView(getHostingPlansSection());
-    }
-
-    /**
      * Scrolls to the features section.
      */
     @Step("Scroll to features section")
@@ -259,7 +247,7 @@ public class HomePage extends BasePage {
     // =========================================================================
     // Page Information
     // =========================================================================
-
+    
     /**
      * Gets the hero section title text.
      *
@@ -302,15 +290,6 @@ public class HomePage extends BasePage {
      */
     public boolean isHeroSectionVisible() {
         return getHeroSection().isVisible();
-    }
-
-    /**
-     * Checks if the hosting plans section is visible.
-     *
-     * @return true if hosting plans section is visible
-     */
-    public boolean isHostingPlansSectionVisible() {
-        return getHostingPlansSection().isVisible();
     }
 
     /**
@@ -372,12 +351,12 @@ public class HomePage extends BasePage {
     }
 
     /**
-     * Gets the hosting plans section locator for assertions.
+     * Gets the footer component locator for assertions.
      *
-     * @return Hosting plans section locator
+     * @return Footer component locator
      */
-    public Locator hostingPlansSection() {
-        return getHostingPlansSection();
+    public Locator footerComponent() {
+        return footer.getFooterContainer();
     }
 }
 

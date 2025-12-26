@@ -3,6 +3,8 @@ package com.example.pages.components;
 import com.example.utils.WaitUtils;
 import com.microsoft.playwright.Locator;
 import com.microsoft.playwright.Page;
+import com.microsoft.playwright.options.AriaRole;
+
 import io.qameta.allure.Step;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -42,7 +44,7 @@ public class FooterComponent {
         this.page = page;
 
         // Initialize locators
-        this.footerContainer = page.locator("footer").first();
+        this.footerContainer = page.getByLabel("Footer Navigation");
 
         // Footer sections - using text content to identify sections
         this.webHostingSection = page.locator("footer :text('Web Hosting'), footer h4:text-matches('.*Hosting.*', 'i')").first();
@@ -51,12 +53,12 @@ public class FooterComponent {
         this.aboutUsSection = page.locator("footer :text('About Us'), footer h4:text-matches('About.*', 'i')").first();
 
         // Social media
-        this.socialMediaLinks = page.locator("footer a[href*='facebook'], footer a[href*='twitter'], footer a[href*='linkedin'], footer .social-links a");
+        this.socialMediaLinks = page.locator(".imh-social");
 
         // Legal
-        this.copyrightText = page.locator("footer :text-matches('.*Copyright.*|.*©.*', 'i')").first();
-        this.termsOfServiceLink = page.locator("footer a[href*='terms'], footer a:text-matches('Terms.*', 'i')").first();
-        this.privacyPolicyLink = page.locator("footer a[href*='privacy'], footer a:text-matches('Privacy.*', 'i')").first();
+        this.copyrightText = page.getByText("Copyright © 2002-");
+        this.termsOfServiceLink = page.getByRole(AriaRole.LINK, new Page.GetByRoleOptions().setName("Terms of Service"));
+        this.privacyPolicyLink = page.getByRole(AriaRole.LINK, new Page.GetByRoleOptions().setName("Privacy Policy"));
     }
 
     // =========================================================================

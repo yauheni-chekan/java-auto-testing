@@ -28,7 +28,9 @@
         </encoder>
     </appender>
 
-    <!-- Separate file for test execution logs -->
+    <!-- Separate file for test execution logs - only test execution events -->
+    <!-- This file contains focused test execution logs (test start/end, pass/fail) -->
+    <!-- It's written to by com.example.tests.* and TestResultWatcher loggers only -->
     <appender name="TEST_FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
         <file>${LOG_DIR}/test-execution.log</file>
         <rollingPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">
@@ -51,6 +53,19 @@
 
     <!-- Framework package loggers -->
     <logger name="com.example" level="DEBUG" additivity="false">
+        <appender-ref ref="CONSOLE"/>
+        <appender-ref ref="ASYNC_FILE"/>
+    </logger>
+
+    <!-- Test execution logger - writes to TEST_FILE for focused test execution logs -->
+    <logger name="com.example.tests" level="INFO" additivity="false">
+        <appender-ref ref="CONSOLE"/>
+        <appender-ref ref="ASYNC_FILE"/>
+        <appender-ref ref="TEST_FILE"/>
+    </logger>
+
+    <!-- Test result watcher logger - captures test pass/fail events -->
+    <logger name="com.example.base.BaseTest$TestResultWatcher" level="INFO" additivity="false">
         <appender-ref ref="CONSOLE"/>
         <appender-ref ref="ASYNC_FILE"/>
         <appender-ref ref="TEST_FILE"/>
@@ -80,4 +95,3 @@
         <appender-ref ref="ASYNC_FILE"/>
     </root>
 </configuration>
-

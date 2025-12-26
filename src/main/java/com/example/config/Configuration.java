@@ -260,4 +260,3 @@ public final class Configuration {
         return getIntProperty("retry.count", 0);
     }
 }
-

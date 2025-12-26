@@ -313,6 +313,10 @@ public class MyPage extends BasePage {
 
 ## Reporting
 
+The framework generates multiple types of reports for comprehensive test analysis:
+
+### Allure Reports
+
 The framework generates Allure reports with:
 
 - Test execution summary
@@ -321,6 +325,83 @@ The framework generates Allure reports with:
 - Page source attachments
 - Environment information
 - Test categorization by Epic/Feature/Story
+
+### Maven Surefire Reports
+
+Maven Surefire Plugin automatically generates test execution reports in `target/surefire-reports/` after each test run.
+
+#### Report Types
+
+1. **TXT Reports** (`{ClassName}.txt`)
+   - Quick summary of test execution
+   - Shows: Tests run, Failures, Errors, Skipped, Time elapsed
+   - Example:
+     ```
+     Tests run: 10, Failures: 2, Errors: 2, Skipped: 0, Time elapsed: 0.688 s
+     ```
+
+2. **XML Reports** (`TEST-{ClassName}.xml`)
+   - Detailed test execution results
+   - Includes: System properties, stack traces, test method details, execution times
+   - Machine-readable format for CI/CD integration
+
+#### Viewing Surefire Reports
+
+**Option 1: Direct File Access**
+- Navigate to `target/surefire-reports/` directory
+- Open `.txt` files for quick summaries
+- Open `.xml` files for detailed information (view in browser or XML viewer)
+
+**Option 2: Maven Command Line**
+```bash
+# Run tests and view summary in console
+mvn test
+
+# Run with detailed output
+mvn test -X
+
+# Run specific test class
+mvn test -Dtest=HomePageTest
+
+# Run specific test method
+mvn test -Dtest=HomePageTest#testHomePageLoads
+```
+
+**Option 3: Generate HTML Reports (if configured)**
+```bash
+# Generate HTML report from XML files
+mvn surefire-report:report-only
+```
+
+#### Using Reports for Debugging
+
+1. **Identify Failing Tests**: Check TXT files for quick overview
+2. **Analyze Stack Traces**: TXT files contain full stack traces for failures and errors
+3. **Check Execution Times**: Identify slow tests from time elapsed information
+4. **Review System Properties**: XML files include environment details (Java version, OS, etc.)
+
+#### Report Location
+
+- **Directory**: `target/surefire-reports/`
+- **Generated**: Automatically after each `mvn test` execution
+- **Format**: One TXT and one XML file per test class
+
+#### CI/CD Integration
+
+Surefire reports can be:
+- Published as build artifacts
+- Parsed by CI tools (Jenkins, GitHub Actions, GitLab CI, etc.)
+- Used to fail builds if tests fail
+- Integrated with test result visualization tools
+
+**Example GitHub Actions Integration:**
+```yaml
+- name: Publish Test Results
+  uses: EnricoMi/publish-unit-test-result-action@v2
+  if: always()
+  with:
+    files: target/surefire-reports/**/*.xml
+```
 
 ## Best Practices
 
