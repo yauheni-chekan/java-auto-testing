@@ -1,5 +1,7 @@
 package com.example.pages.components;
 
+import com.example.pages.LoginPage;
+import com.example.pages.PricingPage;
 import com.example.utils.WaitUtils;
 import com.microsoft.playwright.Locator;
 import com.microsoft.playwright.Page;
@@ -69,7 +71,7 @@ public class HeaderComponent {
         this.wordPressHostingDropdown = navArea.getByRole(AriaRole.BUTTON, new Locator.GetByRoleOptions().setName("Hosting for WordPress")).first();
         this.allHostingDropdown = navArea.getByRole(AriaRole.BUTTON, new Locator.GetByRoleOptions().setName("All Hosting")).first();
         this.servicesDropdown = navArea.getByRole(AriaRole.BUTTON, new Locator.GetByRoleOptions().setName("Website Services")).first();
-        this.pricingLink = navArea.getByRole(AriaRole.BUTTON, new Locator.GetByRoleOptions().setName("Pricing")).first();
+        this.pricingLink = navArea.getByRole(AriaRole.LINK, new Locator.GetByRoleOptions().setName("Pricing")).first();
         this.cartIcon = navArea.getByRole(AriaRole.LINK, new Locator.GetByRoleOptions().setName("Shopping Cart")).first();
     }
 
@@ -193,19 +195,21 @@ public class HeaderComponent {
      * Navigates to Pricing page.
      */
     @Step("Navigate to Pricing")
-    public void navigateToPricing() {
+    public PricingPage navigateToPricing() {
         logger.info("Navigating to Pricing");
         pricingLink.click();
-        WaitUtils.waitForDomContentLoaded(page);
+        return new PricingPage(page);
     }
 
     /**
      * Clicks on the Login button.
      */
     @Step("Click Login button")
-    public void clickLogin() {
+    public LoginPage clickLogin() {
         logger.info("Clicking Login button");
         loginButton.click();
+        WaitUtils.waitForDomContentLoaded(page);
+        return new LoginPage();
     }
 
     /**
@@ -340,5 +344,9 @@ public class HeaderComponent {
      */
     public Locator getLoginButton() {
         return loginButton;
+    }
+
+    public Locator getPricingLink() {
+        return pricingLink;
     }
 }

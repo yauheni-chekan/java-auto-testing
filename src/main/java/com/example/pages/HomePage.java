@@ -61,44 +61,20 @@ public class HomePage extends BasePage {
         return page.getByRole(AriaRole.LINK, new Page.GetByRoleOptions().setName("Talk with an Expert")).first();
     }
 
-    private Locator getHostingPlansSection() {
-        return page.locator("section:has(h2:text-matches('.*Hosting.*|.*Plans.*', 'i')), [class*='pricing'], [class*='plans']").first();
-    }
-
     private Locator getVpsHostingCard() {
-        return page.locator("[class*='card']:has(:text('VPS')), .hosting-card:has(:text('VPS'))").first();
+        return page.locator("[class*='imh-clickable-card']:has(:text('VPS Hosting'))").first();
     }
 
     private Locator getDedicatedHostingCard() {
-        return page.locator("[class*='card']:has(:text('Dedicated')), .hosting-card:has(:text('Dedicated'))").first();
+        return page.locator("[class*='imh-clickable-card']:has(:text('Dedicated Hosting'))").first();
     }
 
     private Locator getSharedHostingCard() {
-        return page.locator("[class*='card']:has(:text('Shared')), .hosting-card:has(:text('Shared'))").first();
+        return page.locator("[class*='imh-clickable-card']:has(:text('Shared Hosting'))").first();
     }
 
     private Locator getWordpressHostingCard() {
-        return page.locator("[class*='card']:has(:text('WordPress')), .hosting-card:has(:text('WordPress'))").first();
-    }
-
-    private Locator getFeaturesSection() {
-        return page.locator("section:has(h2:text-matches('.*Why.*Choose.*|.*Features.*', 'i'))").first();
-    }
-
-    private Locator getFeatureItems() {
-        return page.locator("[class*='feature'], .feature-item, [class*='benefit']");
-    }
-
-    private Locator getDomainSearchInput() {
-        return page.locator("input[type='text'][placeholder*='domain'], input[name*='domain'], .domain-search input").first();
-    }
-
-    private Locator getDomainSearchButton() {
-        return page.locator("button:text-matches('.*Search.*|.*Go.*', 'i'), .domain-search button").first();
-    }
-
-    private Locator getChatWithUsButton() {
-        return page.locator("a:text-matches('Chat.*Us.*', 'i'), button:text-matches('Chat.*Us.*', 'i')").first();
+        return page.locator("[class*='imh-clickable-card']:has(:text('Hosting for WordPress'))").first();
     }
 
     @Override
@@ -169,42 +145,6 @@ public class HomePage extends BasePage {
     }
 
     /**
-     * Clicks the Chat With Us button.
-     */
-    @Step("Click Chat With Us button")
-    public void clickChatWithUs() {
-        logger.info("Clicking Chat With Us button");
-        click(getChatWithUsButton());
-    }
-
-    /**
-     * Searches for a domain.
-     *
-     * @param domainName Domain name to search
-     */
-    @Step("Search for domain: {domainName}")
-    public void searchDomain(String domainName) {
-        logger.info("Searching for domain: {}", domainName);
-        Locator searchInput = getDomainSearchInput();
-        if (searchInput.isVisible()) {
-            scrollIntoView(searchInput);
-            clearAndType(searchInput, domainName);
-            click(getDomainSearchButton());
-        } else {
-            logger.warn("Domain search input not visible on page");
-        }
-    }
-
-    /**
-     * Scrolls to the features section.
-     */
-    @Step("Scroll to features section")
-    public void scrollToFeatures() {
-        logger.info("Scrolling to features section");
-        scrollIntoView(getFeaturesSection());
-    }
-
-    /**
      * Clicks on VPS Hosting card.
      */
     @Step("Click VPS Hosting card")
@@ -270,15 +210,6 @@ public class HomePage extends BasePage {
         return "";
     }
 
-    /**
-     * Gets the number of feature items displayed.
-     *
-     * @return Count of feature items
-     */
-    public int getFeatureItemsCount() {
-        return getFeatureItems().count();
-    }
-
     // =========================================================================
     // Visibility Checks
     // =========================================================================
@@ -290,24 +221,6 @@ public class HomePage extends BasePage {
      */
     public boolean isHeroSectionVisible() {
         return getHeroSection().isVisible();
-    }
-
-    /**
-     * Checks if the features section is visible.
-     *
-     * @return true if features section is visible
-     */
-    public boolean isFeaturesSectionVisible() {
-        return getFeaturesSection().isVisible();
-    }
-
-    /**
-     * Checks if domain search is available.
-     *
-     * @return true if domain search input is visible
-     */
-    public boolean isDomainSearchVisible() {
-        return getDomainSearchInput().isVisible();
     }
 
     /**
@@ -349,14 +262,4 @@ public class HomePage extends BasePage {
     public Locator viewPlansButton() {
         return getViewPlansButton();
     }
-
-    /**
-     * Gets the footer component locator for assertions.
-     *
-     * @return Footer component locator
-     */
-    public Locator footerComponent() {
-        return footer.getFooterContainer();
-    }
 }
-

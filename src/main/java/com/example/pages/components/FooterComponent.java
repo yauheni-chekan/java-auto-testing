@@ -19,13 +19,8 @@ public class FooterComponent {
     private final Page page;
 
     // Footer container
-    private final Locator footerContainer;
-
-    // Footer sections
-    private final Locator webHostingSection;
-    private final Locator hostingToolsSection;
-    private final Locator supportSection;
-    private final Locator aboutUsSection;
+    private final Locator footerNavigation;
+    private final Locator bottomFooter;
 
     // Social media links
     private final Locator socialMediaLinks;
@@ -44,21 +39,16 @@ public class FooterComponent {
         this.page = page;
 
         // Initialize locators
-        this.footerContainer = page.getByLabel("Footer Navigation");
-
-        // Footer sections - using text content to identify sections
-        this.webHostingSection = page.locator("footer :text('Web Hosting'), footer h4:text-matches('.*Hosting.*', 'i')").first();
-        this.hostingToolsSection = page.locator("footer :text('Hosting Tools'), footer h4:text-matches('.*Tools.*', 'i')").first();
-        this.supportSection = page.locator("footer :text('Support'), footer h4:text-matches('Support', 'i')").first();
-        this.aboutUsSection = page.locator("footer :text('About Us'), footer h4:text-matches('About.*', 'i')").first();
+        this.footerNavigation = page.getByLabel("Footer Navigation");
+        this.bottomFooter = page.locator("#imh-bottom-footer");
 
         // Social media
-        this.socialMediaLinks = page.locator(".imh-social");
+        this.socialMediaLinks = footerNavigation.locator(".imh-social");
 
         // Legal
-        this.copyrightText = page.getByText("Copyright © 2002-");
-        this.termsOfServiceLink = page.getByRole(AriaRole.LINK, new Page.GetByRoleOptions().setName("Terms of Service"));
-        this.privacyPolicyLink = page.getByRole(AriaRole.LINK, new Page.GetByRoleOptions().setName("Privacy Policy"));
+        this.copyrightText = bottomFooter.getByText("Copyright © 2002-");
+        this.termsOfServiceLink = bottomFooter.getByRole(AriaRole.LINK, new Locator.GetByRoleOptions().setName("Terms of Service"));
+        this.privacyPolicyLink = bottomFooter.getByRole(AriaRole.LINK, new Locator.GetByRoleOptions().setName("Privacy Policy"));
     }
 
     // =========================================================================
@@ -71,14 +61,15 @@ public class FooterComponent {
      * @return true if footer is visible
      */
     public boolean isVisible() {
-        return footerContainer.isVisible();
+        return footerNavigation.isVisible() && bottomFooter.isVisible();
     }
 
     /**
      * Waits for the footer to be visible.
      */
     public void waitForFooter() {
-        WaitUtils.waitForVisible(footerContainer);
+        WaitUtils.waitForVisible(footerNavigation);
+        WaitUtils.waitForVisible(bottomFooter);
     }
 
     /**
@@ -87,7 +78,7 @@ public class FooterComponent {
     @Step("Scroll footer into view")
     public void scrollIntoView() {
         logger.debug("Scrolling footer into view");
-        footerContainer.scrollIntoViewIfNeeded();
+        footerNavigation.scrollIntoViewIfNeeded();
     }
 
     // =========================================================================
@@ -147,8 +138,8 @@ public class FooterComponent {
      *
      * @return Footer container locator
      */
-    public Locator getFooterContainer() {
-        return footerContainer;
+    public Locator getFooterNavigation() {
+        return footerNavigation;
     }
 
     /**

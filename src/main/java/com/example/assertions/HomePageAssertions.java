@@ -60,7 +60,7 @@ public class HomePageAssertions {
      */
     public void assertContainsFooter() {
         logger.debug("Asserting page contains footer");
-        assertVisible(homePage.footer().getFooterContainer());
+        assertVisible(homePage.footer().getFooterNavigation());
         assertVisible(homePage.footer().getCopyrightTextLocator());
         footerComponentAssertions.assertContainsText("Copyright © 2002-");
     }

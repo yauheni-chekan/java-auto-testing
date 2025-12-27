@@ -2,10 +2,13 @@ package com.example.tests;
 
 import com.example.base.BaseTest;
 import com.example.pages.HomePage;
+import com.example.pages.PricingPage;
+
 import io.qameta.allure.*;
 import org.junit.jupiter.api.*;
 
 import com.example.assertions.HomePageAssertions;
+import com.example.assertions.PricingPageAssertions;
 
 /**
  * Test class for InMotion Hosting Homepage.
@@ -27,6 +30,7 @@ class HomePageTest extends BaseTest {
     @Test
     @Story("Page Load")
     @Severity(SeverityLevel.BLOCKER)
+    @Tag("smoke")
     @DisplayName("Homepage should load successfully")
     @Description("Verify that the InMotion Hosting homepage loads with all essential elements visible")
     void testHomePageLoads() {
@@ -105,32 +109,52 @@ class HomePageTest extends BaseTest {
     }
 
 
+    @Test
+    @Tag("smoke")
+    @Story("Navigation")
+    @Severity(SeverityLevel.NORMAL)
+    @DisplayName("Clicking the Pricing link should navigate to the Pricing page")
+    void testClickPricingLink() {
+        homePage.open();
+        PricingPage pricingPage = homePage.header().navigateToPricing();
+        PricingPageAssertions pricingPageAssertions = new PricingPageAssertions(pricingPage);
+        pricingPageAssertions.assertPageIsLoaded();
+        pricingPageAssertions.assertTitleIsCorrect();
+    }
+
+
     @Nested
     @DisplayName("Header Component Tests")
     class HeaderComponentTests {
 
         @Test
+        @Tag("smoke")
         @Story("Navigation")
         @Severity(SeverityLevel.NORMAL)
         @DisplayName("VPS Hosting link should be visible in header")
         void testVpsHostingLinkVisible() {
-            // Arrange
             homePage.open();
-
-            // Assert
             pageAssertions.assertVisible(homePage.header().getVpsHostingLink());
         }
 
         @Test
+        @Tag("smoke")
         @Story("Navigation")
         @Severity(SeverityLevel.NORMAL)
         @DisplayName("Dedicated Servers dropdown should be visible in header")
         void testDedicatedServersDropdownVisible() {
-            // Arrange
             homePage.open();
-
-            // Assert
             pageAssertions.assertVisible(homePage.header().getDedicatedServersDropdown());
+        }
+
+        @Test
+        @Tag("smoke")
+        @Story("Navigation")
+        @Severity(SeverityLevel.NORMAL)
+        @DisplayName("Pricing link should be visible in header")
+        void testPricingLinkVisible() {
+            homePage.open();
+            pageAssertions.assertVisible(homePage.header().getPricingLink());
         }
     }
 }
