@@ -85,7 +85,7 @@ mvn clean test -Dtest=HomePageTest
 mvn clean test -Dtest=HomePageTest#testHomePageLoads
 
 # Run with smoke tag
-mvn clean test -Dtags=smoke
+mvn clean test -Dgroups=smoke
 ```
 
 **For PowerShell (Windows):**
@@ -109,7 +109,7 @@ mvn clean test "-Dtest=HomePageTest#testHomePageLoads"
 mvn clean test "-Dbrowser.type=firefox" "-Dbrowser.headless=false"
 
 # Run with smoke tag
-mvn clean test "-Dtags=smoke"
+mvn clean test "-Dgroups=smoke"
 ```
 
 ### 4. Generate Allure Report
