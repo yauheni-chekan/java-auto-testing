@@ -1,6 +1,6 @@
-package com.example.core;
+package com.bdd_example.core;
 
-import com.example.config.Configuration;
+import com.bdd_example.config.Configuration;
 import com.microsoft.playwright.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

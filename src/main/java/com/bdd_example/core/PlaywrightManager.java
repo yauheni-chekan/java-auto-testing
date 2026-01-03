@@ -1,4 +1,4 @@
-package com.example.core;
+package com.bdd_example.core;
 
 import com.microsoft.playwright.*;
 import org.slf4j.Logger;
@@ -180,42 +180,68 @@ public class PlaywrightManager {
         logger.info("Closing Playwright resources");
 
         try {
-            // Stop tracing if enabled
+            // Stop tracing if enabled (with error handling for driver issues)
             if (context != null) {
-                browserFactory.stopTracing(context, "test-trace");
+                try {
+                    browserFactory.stopTracing(context, "test-trace");
+                } catch (Exception e) {
+                    logger.warn("Error stopping tracing (non-critical): {}", e.getMessage());
+                }
             }
 
             // Close page
             if (page != null && !page.isClosed()) {
-                page.close();
-                logger.debug("Page closed");
+                try {
+                    page.close();
+                    logger.debug("Page closed");
+                } catch (Exception e) {
+                    logger.warn("Error closing page (non-critical): {}", e.getMessage());
+                }
             }
             page = null;
 
-            // Close context
+            // Close context (this is where the package.json error often occurs)
             if (context != null) {
-                context.close();
-                logger.debug("Browser context closed");
+                try {
+                    context.close();
+                    logger.debug("Browser context closed");
+                } catch (Exception e) {
+                    // Suppress the package.json error - it's a known Playwright driver issue
+                    String errorMsg = e.getMessage();
+                    if (errorMsg != null && errorMsg.contains("package.json")) {
+                        logger.debug("Suppressed Playwright driver cleanup error (known issue)");
+                    } else {
+                        logger.warn("Error closing browser context: {}", e.getMessage());
+                    }
+                }
             }
             context = null;
 
             // Close browser
             if (browser != null && browser.isConnected()) {
-                browser.close();
-                logger.debug("Browser closed");
+                try {
+                    browser.close();
+                    logger.debug("Browser closed");
+                } catch (Exception e) {
+                    logger.warn("Error closing browser (non-critical): {}", e.getMessage());
+                }
             }
             browser = null;
 
             // Close Playwright
             if (playwright != null) {
-                playwright.close();
-                logger.debug("Playwright closed");
+                try {
+                    playwright.close();
+                    logger.debug("Playwright closed");
+                } catch (Exception e) {
+                    logger.warn("Error closing Playwright (non-critical): {}", e.getMessage());
+                }
             }
             playwright = null;
 
             logger.info("Playwright resources cleanup complete");
         } catch (Exception e) {
-            logger.error("Error during Playwright cleanup: {}", e.getMessage(), e);
+            logger.error("Unexpected error during Playwright cleanup: {}", e.getMessage(), e);
         }
     }
 
@@ -238,4 +264,3 @@ public class PlaywrightManager {
         instance = null;
     }
 }
-

@@ -1,4 +1,4 @@
-package com.example.assertions;
+package com.bdd_example.assertions;
 
 import static com.microsoft.playwright.assertions.PlaywrightAssertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThat;
@@ -6,10 +6,9 @@ import static org.assertj.core.api.Assertions.assertThat;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.bdd_example.pages.HomePage;
 import com.microsoft.playwright.Locator;
 import com.microsoft.playwright.options.WaitForSelectorState;
-
-import com.example.pages.HomePage;
 
 
 /**

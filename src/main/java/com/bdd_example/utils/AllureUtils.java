@@ -1,4 +1,4 @@
-package com.example.utils;
+package com.bdd_example.utils;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;

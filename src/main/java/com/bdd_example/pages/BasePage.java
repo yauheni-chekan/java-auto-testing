@@ -1,12 +1,12 @@
-package com.example.pages;
+package com.bdd_example.pages;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.example.config.Configuration;
-import com.example.core.PlaywrightManager;
-import com.example.utils.AllureUtils;
-import com.example.utils.WaitUtils;
+import com.bdd_example.config.Configuration;
+import com.bdd_example.core.PlaywrightManager;
+import com.bdd_example.utils.AllureUtils;
+import com.bdd_example.utils.WaitUtils;
 import com.microsoft.playwright.Locator;
 import com.microsoft.playwright.Page;
 

@@ -1,9 +1,9 @@
-package com.example.assertions;
+package com.bdd_example.assertions;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.example.pages.PricingPage;
+import com.bdd_example.pages.PricingPage;
 
 import static com.microsoft.playwright.assertions.PlaywrightAssertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThat;
@@ -24,7 +24,7 @@ public class PricingPageAssertions {
     }
 
     public void assertTitleIsCorrect() {
-        String expectedTitle = "Web Hosting Plans & Pricing 2025 | InMotion Hosting";
+        String expectedTitle = "Web Hosting Plans & Pricing 2026 | InMotion Hosting";
         logger.debug("Asserting page title is correct");
         assertThat(pricingPage.getPage()).hasTitle(expectedTitle);
     }

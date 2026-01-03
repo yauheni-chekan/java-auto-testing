@@ -1,9 +1,10 @@
 # Playwright Test Automation Framework
 
-A robust, enterprise-grade test automation framework for web testing using **Java**, **Playwright**, **JUnit 5**, and **Allure Reports**. This framework is specifically designed for automating the [InMotion Hosting](https://www.inmotionhosting.com/) website but can be easily adapted for any web application.
+A robust, enterprise-grade test automation framework for web testing using **Java**, **Playwright**, **Cucumber BDD**, and **Allure Reports**. This framework is specifically designed for automating the [InMotion Hosting](https://www.inmotionhosting.com/) website but can be easily adapted for any web application.
 
 ## Features
 
+- **Behavior-Driven Development (BDD)**: Cucumber-based test scenarios written in Gherkin syntax
 - **Page Object Model (POM)**: Clean separation between test logic and page interactions
 - **Layered Architecture**: Organized into Core, Pages, Components, Utils, and Test layers
 - **Single-Threaded Execution**: Simple, sequential test execution for easier debugging
@@ -13,12 +14,13 @@ A robust, enterprise-grade test automation framework for web testing using **Jav
 - **Cross-Browser Support**: Chromium, Firefox, and WebKit
 - **Automatic Screenshots**: Captures screenshots on test failures
 - **Comprehensive Logging**: SLF4J with Logback for structured logging
+- **Tag-Based Test Execution**: Run specific test scenarios using Cucumber tags
 
 ## Project Structure
 
 ```
 src/
-├── main/java/com/example/
+├── main/java/com/bdd_example/
 │   ├── config/
 │   │   └── Configuration.java         # Configuration management
 │   ├── core/
@@ -27,20 +29,35 @@ src/
 │   ├── pages/
 │   │   ├── BasePage.java              # Base page object class
 │   │   ├── HomePage.java              # InMotion homepage PO
+│   │   ├── PricingPage.java           # Pricing page PO
 │   │   └── components/
 │   │       ├── HeaderComponent.java   # Header navigation component
 │   │       └── FooterComponent.java   # Footer component
+│   ├── assertions/
+│   │   ├── HomePageAssertions.java    # Homepage assertions
+│   │   ├── PricingPageAssertions.java # Pricing page assertions
+│   │   └── FooterComponentAssertions.java # Footer assertions
 │   └── utils/
 │       ├── WaitUtils.java             # Wait helper methods
 │       └── AllureUtils.java           # Allure reporting utilities
 ├── main/resources/
 │   ├── config.properties              # Framework configuration
 │   └── logback.xml                    # Logging configuration
-└── test/java/com/example/
-    ├── base/
-    │   └── BaseTest.java              # Base test class with lifecycle
-    └── tests/
-        └── HomePageTest.java          # Sample test class
+└── test/
+    ├── java/com/bdd_example/
+    │   ├── base/
+    │   │   └── BaseTest.java          # Base test class with lifecycle
+    │   └── bdd/
+    │       ├── runners/
+    │       │   └── CucumberTestRunner.java  # Cucumber test runner
+    │       └── steps/
+    │           ├── CommonSteps.java         # Common step definitions
+    │           ├── HeaderNavigationSteps.java # Header navigation steps
+    │           └── PricingNavigationSteps.java # Pricing navigation steps
+    └── resources/
+        └── features/
+            ├── header_navigation.feature    # Header navigation scenarios
+            └── pricing_navigation.feature   # Pricing navigation scenarios
 ```
 
 ## Prerequisites
@@ -67,9 +84,11 @@ mvn exec:java -e -D exec.mainClass=com.microsoft.playwright.CLI -D exec.args="in
 
 ### 3. Run Tests
 
+The framework uses Cucumber BDD with JUnit Platform. Tests are executed via the `CucumberTestRunner` class.
+
 **For Bash/Linux/Mac:**
 ```bash
-# Run all tests
+# Run all Cucumber scenarios
 mvn clean test
 
 # Run with specific browser
@@ -78,19 +97,25 @@ mvn clean test -Dbrowser.type=firefox
 # Run in headed mode (visible browser)
 mvn clean test -Dbrowser.headless=false
 
-# Run specific test class
-mvn clean test -Dtest=HomePageTest
+# Run scenarios with specific tags (e.g., @smoke)
+mvn clean test -Dcucumber.filter.tags="@smoke"
 
-# Run specific test method
-mvn clean test -Dtest=HomePageTest#testHomePageLoads
+# Run scenarios excluding specific tags (e.g., exclude @wip)
+mvn clean test -Dcucumber.filter.tags="not @wip"
 
-# Run with smoke tag
-mvn clean test -Dgroups=smoke
+# Run scenarios with multiple tag conditions
+mvn clean test -Dcucumber.filter.tags="@smoke and @navigation"
+
+# Run specific feature file
+mvn clean test -Dcucumber.features="src/test/resources/features/pricing_navigation.feature"
+
+# Combine browser and tag filters
+mvn clean test -Dbrowser.type=firefox -Dcucumber.filter.tags="@smoke"
 ```
 
 **For PowerShell (Windows):**
 ```powershell
-# Run all tests
+# Run all Cucumber scenarios
 mvn clean test
 
 # Run with specific browser (quote the -D parameter)
@@ -99,18 +124,23 @@ mvn clean test "-Dbrowser.type=firefox"
 # Run in headed mode (visible browser)
 mvn clean test "-Dbrowser.headless=false"
 
-# Run specific test class
-mvn clean test "-Dtest=HomePageTest"
+# Run scenarios with specific tags (e.g., @smoke)
+mvn clean test "-Dcucumber.filter.tags=@smoke"
 
-# Run specific test method
-mvn clean test "-Dtest=HomePageTest#testHomePageLoads"
+# Run scenarios excluding specific tags (e.g., exclude @wip)
+mvn clean test "-Dcucumber.filter.tags=not @wip"
+
+# Run scenarios with multiple tag conditions
+mvn clean test "-Dcucumber.filter.tags=@smoke and @navigation"
+
+# Run specific feature file
+mvn clean test "-Dcucumber.features=src/test/resources/features/pricing_navigation.feature"
 
 # Multiple system properties
-mvn clean test "-Dbrowser.type=firefox" "-Dbrowser.headless=false"
-
-# Run with smoke tag
-mvn clean test "-Dgroups=smoke"
+mvn clean test "-Dbrowser.type=firefox" "-Dbrowser.headless=false" "-Dcucumber.filter.tags=@smoke"
 ```
+
+**Note:** By default, the `CucumberTestRunner` is configured to run scenarios with `@smoke` tag or exclude `@wip` tag. You can override this behavior using the `-Dcucumber.filter.tags` system property.
 
 ### 4. Generate Allure Report
 
@@ -225,12 +255,12 @@ Override any property via system properties:
 
 **Bash/Linux/Mac:**
 ```bash
-mvn clean test -Dbrowser.type=firefox -Dbrowser.headless=false -Dbase.url=https://example.com
+mvn clean test -Dbrowser.type=firefox -Dbrowser.headless=false -Dbase.url=https://example.com -Dcucumber.filter.tags="@smoke"
 ```
 
 **PowerShell (Windows):**
 ```powershell
-mvn clean test "-Dbrowser.type=firefox" "-Dbrowser.headless=false" "-Dbase.url=https://example.com"
+mvn clean test "-Dbrowser.type=firefox" "-Dbrowser.headless=false" "-Dbase.url=https://example.com" "-Dcucumber.filter.tags=@smoke"
 ```
 
 ## Browser Session Management
@@ -250,24 +280,75 @@ If you need a completely fresh browser for each test, you can override the `setU
 
 ## Writing Tests
 
-### Basic Test Example
+### Cucumber Feature Files
+
+Tests are written in Gherkin syntax as `.feature` files located in `src/test/resources/features/`:
+
+```gherkin
+@smoke @navigation
+Feature: Homepage Navigation
+  As a user
+  I want to navigate the homepage
+  So that I can access different sections
+
+  Background:
+    Given I am on the InMotion Hosting website
+
+  Scenario: Homepage should load successfully
+    When I navigate to the homepage
+    Then the homepage should be loaded
+    And the page title should contain "InMotion"
+```
+
+### Step Definitions
+
+Step definitions are Java classes in `src/test/java/com/bdd_example/bdd/steps/` that implement the Gherkin steps:
 
 ```java
-@Epic("Website")
-@Feature("Homepage")
-class MyTest extends BaseTest {
+package com.bdd_example.bdd.steps;
 
-    @Test
-    @Story("Page Load")
-    @DisplayName("Homepage should load successfully")
-    void testHomePageLoads() {
-        HomePage homePage = new HomePage();
+import com.bdd_example.pages.HomePage;
+import io.cucumber.java.en.Given;
+import io.cucumber.java.en.When;
+import io.cucumber.java.en.Then;
+
+public class NavigationSteps extends BaseTest {
+    
+    private HomePage homePage;
+    
+    @Given("I am on the InMotion Hosting website")
+    public void iAmOnTheWebsite() {
+        // Initialization logic
+    }
+    
+    @When("I navigate to the homepage")
+    public void iNavigateToHomepage() {
+        homePage = new HomePage();
         homePage.open();
-        
-        assertThat(homePage.getPageTitle())
-            .containsIgnoringCase("InMotion");
+    }
+    
+    @Then("the homepage should be loaded")
+    public void homepageShouldBeLoaded() {
+        homePage.verifyPageLoaded();
     }
 }
+```
+
+### Cucumber Tags
+
+Use tags to organize and filter scenarios:
+
+- `@smoke` - Critical smoke tests
+- `@navigation` - Navigation-related tests
+- `@wip` - Work in progress (excluded by default)
+- Custom tags for feature-specific tests
+
+Tag examples in feature files:
+```gherkin
+@smoke @pricing
+Feature: Pricing Page
+  Scenario: View pricing plans
+    # ...
 ```
 
 ### Creating Page Objects
@@ -303,8 +384,8 @@ public class MyPage extends BasePage {
 
 ```
 ┌─────────────────────────────────────────────────────────────┐
-│                        Test Layer                           │
-│              (JUnit 5 Test Classes)                         │
+│                    Cucumber BDD Layer                       │
+│         (Feature Files + Step Definitions)                  │
 ├─────────────────────────────────────────────────────────────┤
 │                     Page Object Layer                       │
 │         (Page Objects + Reusable Components)                │
@@ -326,11 +407,32 @@ The framework generates multiple types of reports for comprehensive test analysi
 The framework generates Allure reports with:
 
 - Test execution summary
-- Step-by-step test execution
+- Step-by-step test execution (Cucumber scenarios and steps)
 - Screenshots on failure
 - Page source attachments
 - Environment information
-- Test categorization by Epic/Feature/Story
+- Test categorization by Feature/Scenario
+- Gherkin syntax display in reports
+
+### Cucumber Reports
+
+Cucumber generates multiple report formats automatically:
+
+1. **HTML Report** (`target/cucumber-reports/cucumber.html`)
+   - Interactive HTML report with scenario details
+   - View in browser: Open `target/cucumber-reports/cucumber.html`
+
+2. **JSON Report** (`target/cucumber-reports/cucumber.json`)
+   - Machine-readable format for CI/CD integration
+   - Can be parsed by various reporting tools
+
+3. **XML Report** (`target/cucumber-reports/cucumber.xml`)
+   - JUnit-compatible XML format
+   - Useful for CI/CD tools that expect JUnit XML
+
+4. **Pretty Console Output**
+   - Formatted console output during test execution
+   - Shows scenario progress and results
 
 ### Maven Surefire Reports
 
@@ -341,60 +443,35 @@ Maven Surefire Plugin automatically generates test execution reports in `target/
 1. **TXT Reports** (`{ClassName}.txt`)
    - Quick summary of test execution
    - Shows: Tests run, Failures, Errors, Skipped, Time elapsed
-   - Example:
-     ```
-     Tests run: 10, Failures: 2, Errors: 2, Skipped: 0, Time elapsed: 0.688 s
-     ```
 
 2. **XML Reports** (`TEST-{ClassName}.xml`)
    - Detailed test execution results
-   - Includes: System properties, stack traces, test method details, execution times
+   - Includes: System properties, stack traces, execution times
    - Machine-readable format for CI/CD integration
 
-#### Viewing Surefire Reports
+#### Viewing Reports
 
-**Option 1: Direct File Access**
+**Cucumber HTML Report:**
+```bash
+# After running tests, open the HTML report
+# Windows: start target/cucumber-reports/cucumber.html
+# Mac/Linux: open target/cucumber-reports/cucumber.html
+```
+
+**Allure Report:**
+```bash
+# Generate and serve Allure report
+mvn allure:serve
+```
+
+**Surefire Reports:**
 - Navigate to `target/surefire-reports/` directory
 - Open `.txt` files for quick summaries
-- Open `.xml` files for detailed information (view in browser or XML viewer)
-
-**Option 2: Maven Command Line**
-```bash
-# Run tests and view summary in console
-mvn test
-
-# Run with detailed output
-mvn test -X
-
-# Run specific test class
-mvn test -Dtest=HomePageTest
-
-# Run specific test method
-mvn test -Dtest=HomePageTest#testHomePageLoads
-```
-
-**Option 3: Generate HTML Reports (if configured)**
-```bash
-# Generate HTML report from XML files
-mvn surefire-report:report-only
-```
-
-#### Using Reports for Debugging
-
-1. **Identify Failing Tests**: Check TXT files for quick overview
-2. **Analyze Stack Traces**: TXT files contain full stack traces for failures and errors
-3. **Check Execution Times**: Identify slow tests from time elapsed information
-4. **Review System Properties**: XML files include environment details (Java version, OS, etc.)
-
-#### Report Location
-
-- **Directory**: `target/surefire-reports/`
-- **Generated**: Automatically after each `mvn test` execution
-- **Format**: One TXT and one XML file per test class
+- Open `.xml` files for detailed information
 
 #### CI/CD Integration
 
-Surefire reports can be:
+Reports can be:
 - Published as build artifacts
 - Parsed by CI tools (Jenkins, GitHub Actions, GitLab CI, etc.)
 - Used to fail builds if tests fail
@@ -411,12 +488,16 @@ Surefire reports can be:
 
 ## Best Practices
 
-1. **Page Objects**: One class per page/significant component
-2. **Locators**: Use robust locator strategies (data-testid, aria-label)
-3. **Assertions**: Use AssertJ for fluent, readable assertions
-4. **Logging**: Log important actions and state changes
-5. **Screenshots**: Capture screenshots at key verification points
-6. **Browser Session Reuse**: The browser is initialized once per test class and reused for all tests, with state cleared between tests
+1. **BDD Scenarios**: Write clear, readable Gherkin scenarios that describe user behavior
+2. **Step Definitions**: Keep step definitions focused and reusable across scenarios
+3. **Page Objects**: One class per page/significant component
+4. **Locators**: Use robust locator strategies (data-testid, aria-label)
+5. **Assertions**: Use AssertJ for fluent, readable assertions
+6. **Tags**: Use meaningful tags to organize and filter scenarios
+7. **Logging**: Log important actions and state changes
+8. **Screenshots**: Capture screenshots at key verification points
+9. **Browser Session Reuse**: The browser is initialized once per test class and reused for all tests, with state cleared between tests
+10. **Feature Files**: Organize feature files by functionality or user journey
 
 ## Troubleshooting
 

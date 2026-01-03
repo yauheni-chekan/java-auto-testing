@@ -1,8 +1,8 @@
-package com.example.base;
+package com.bdd_example.base;
 
-import com.example.config.Configuration;
-import com.example.core.PlaywrightManager;
-import com.example.utils.AllureUtils;
+import com.bdd_example.config.Configuration;
+import com.bdd_example.core.PlaywrightManager;
+import com.bdd_example.utils.AllureUtils;
 import com.microsoft.playwright.Page;
 import io.qameta.allure.Allure;
 import org.junit.jupiter.api.AfterAll;

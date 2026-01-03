@@ -1,7 +1,7 @@
-package com.example.pages;
+package com.bdd_example.pages;
 
-import com.example.pages.components.FooterComponent;
-import com.example.pages.components.HeaderComponent;
+import com.bdd_example.pages.components.FooterComponent;
+import com.bdd_example.pages.components.HeaderComponent;
 import com.microsoft.playwright.Locator;
 import com.microsoft.playwright.Page;
 import com.microsoft.playwright.options.AriaRole;

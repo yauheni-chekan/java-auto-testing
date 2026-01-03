@@ -1,8 +1,8 @@
-package com.example.pages.components;
+package com.bdd_example.pages.components;
 
-import com.example.pages.LoginPage;
-import com.example.pages.PricingPage;
-import com.example.utils.WaitUtils;
+import com.bdd_example.pages.LoginPage;
+import com.bdd_example.pages.PricingPage;
+import com.bdd_example.utils.WaitUtils;
 import com.microsoft.playwright.Locator;
 import com.microsoft.playwright.Page;
 import com.microsoft.playwright.options.AriaRole;

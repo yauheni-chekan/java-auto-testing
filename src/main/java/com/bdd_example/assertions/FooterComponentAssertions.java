@@ -1,11 +1,11 @@
-package com.example.assertions;
+package com.bdd_example.assertions;
 
 import static com.microsoft.playwright.assertions.PlaywrightAssertions.assertThat;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.example.pages.components.FooterComponent;
+import com.bdd_example.pages.components.FooterComponent;
 
 public class FooterComponentAssertions {
 

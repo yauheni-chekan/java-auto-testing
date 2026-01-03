@@ -1,4 +1,4 @@
-package com.example.pages;
+package com.bdd_example.pages;
 
 import com.microsoft.playwright.Locator;
 import com.microsoft.playwright.Page;
