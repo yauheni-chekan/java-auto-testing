@@ -6,41 +6,33 @@ import com.microsoft.playwright.options.AriaRole;
 
 public class LoginPage extends BasePage {
 
-    private final Locator loginContainer;
-    private final Locator usernameInput;
-    private final Locator passwordInput;
-    private final Locator loginButton;
+    private final Locator loginContainer = page.locator("#login-container-simple");
+    private final Locator usernameInput = loginContainer.getByPlaceholder("email address");
+    private final Locator passwordInput = loginContainer.getByPlaceholder("password");
+    private final Locator loginButton = loginContainer.getByRole(AriaRole.BUTTON, new Locator.GetByRoleOptions().setName("Log In"));
 
     public LoginPage() {
         super();
-        this.loginContainer = getLoginContainer();
-        this.usernameInput = getUsernameInput();
-        this.passwordInput = getPasswordInput();
-        this.loginButton = getLoginButton();
     }
 
     public LoginPage(Page page) {
         super(page);
-        this.loginContainer = getLoginContainer();
-        this.usernameInput = getUsernameInput();
-        this.passwordInput = getPasswordInput();
-        this.loginButton = getLoginButton();
     }
 
-    private Locator getLoginContainer() {
-        return page.locator("#login-container-simple");
+    public Locator getLoginContainer() {
+        return loginContainer;
     }
 
-    private Locator getUsernameInput() {
-        return loginContainer.getByPlaceholder("email address");
+    public Locator getUsernameInput() {
+        return usernameInput;
     }
 
-    private Locator getPasswordInput() {
-        return loginContainer.getByPlaceholder("password");
+    public Locator getPasswordInput() {
+        return passwordInput;
     }
 
-    private Locator getLoginButton() {
-        return loginContainer.getByRole(AriaRole.BUTTON, new Locator.GetByRoleOptions().setName("Log In"));
+    public Locator getLoginButton() {
+        return loginButton;
     }
 
     @Override

@@ -7,6 +7,9 @@ import com.microsoft.playwright.options.AriaRole;
 
 public class PricingPage extends BasePage {
 
+    private final Locator pricingPageIdentifier = page.getByRole(AriaRole.HEADING, new Page.GetByRoleOptions().setName("InMotion Hosting Pricing")).first();
+    private final String urlPattern = ".*inmotionhosting\\.com/pricing?$";
+
     public PricingPage() {
         super();
     }
@@ -26,11 +29,11 @@ public class PricingPage extends BasePage {
 
     @Override
     protected String getUrlPattern() {
-        return ".*inmotionhosting\\.com/pricing?$";
+        return urlPattern;
     }
 
     @Override
     protected Locator getPageIdentifier() {
-        return page.getByRole(AriaRole.HEADING, new Page.GetByRoleOptions().setName("InMotion Hosting Pricing")).first();
+        return pricingPageIdentifier;
     }
 }
