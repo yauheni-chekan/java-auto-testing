@@ -3,6 +3,7 @@ package com.example.tests;
 import com.example.base.BaseTest;
 import com.example.pages.HomePage;
 import com.example.pages.PricingPage;
+import com.example.utils.AllureUtils;
 
 import io.qameta.allure.*;
 import org.junit.jupiter.api.*;
@@ -34,10 +35,7 @@ class HomePageTest extends BaseTest {
     @DisplayName("Homepage should load successfully")
     @Description("Verify that the InMotion Hosting homepage loads with all essential elements visible")
     void testHomePageLoads() {
-        // Arrange & Act
         homePage.open();
-
-        // Assert
         pageAssertions.assertTitleIsCorrect();
         pageAssertions.assertUrlMatches("https://www.inmotionhosting.com/");
         logger.info("Homepage loaded successfully with title: {}", homePage.getPageTitle());
@@ -63,13 +61,8 @@ class HomePageTest extends BaseTest {
     @DisplayName("Footer should be visible with legal links")
     @Description("Verify that the footer section is displayed with copyright and legal information")
     void testFooterVisible() {
-        // Arrange
         homePage.open();
-
-        // Act
         homePage.footer().scrollIntoView();
-
-        // Assert
         pageAssertions.assertContainsFooter();
         logger.info("Footer verified successfully");
     }
@@ -80,13 +73,9 @@ class HomePageTest extends BaseTest {
     @DisplayName("Logo click should stay on homepage")
     @Description("Verify that clicking the logo navigates to or stays on the homepage")
     void testLogoNavigation() {
-        // Arrange
         homePage.open();
-
-        // Act
         homePage.header().clickLogo();
 
-        // Assert
         pageAssertions.assertUrlMatches("https://www.inmotionhosting.com/");
         logger.info("Logo navigation verified - current URL: {}", homePage.getCurrentUrl());
     }
@@ -97,13 +86,8 @@ class HomePageTest extends BaseTest {
     @DisplayName("Page should have reasonable load performance")
     @Description("Verify that the homepage loads within acceptable time limits")
     void testPageLoadPerformance() {
-        // Arrange
         long startTime = System.currentTimeMillis();
-
-        // Act
         homePage.open();
-
-        // Assert
         long loadTime = System.currentTimeMillis() - startTime;
         pageAssertions.assertLoadTime(loadTime);
     }
@@ -155,6 +139,111 @@ class HomePageTest extends BaseTest {
         void testPricingLinkVisible() {
             homePage.open();
             pageAssertions.assertVisible(homePage.header().getPricingLink());
+        }
+    }
+
+    @Nested
+    @DisplayName("Footer Component Tests")
+    class FooterComponentTests {
+        
+        @Test
+        @Tag("smoke")
+        @Story("Navigation")
+        @Severity(SeverityLevel.NORMAL)
+        @DisplayName("Cookie Preferences link should be visible in footer")
+        void testCookiePreferencesLinkVisible() {
+            homePage.open();
+            pageAssertions.assertVisible(homePage.footer().getCookiePreferencesLink());
+        }
+
+        @Test
+        @Tag("cookie")
+        @Story("Cookie Preferences")
+        @Severity(SeverityLevel.CRITICAL)
+        @DisplayName("Cookie Preferences modal should be visible")
+        void testCookiePreferencesModalVisible() {
+            homePage.open();
+            homePage.footer().clickCookiePreferences();
+            pageAssertions.assertVisible(homePage.footer().getCookiePreferencesModal());
+        }
+
+        @Test
+        @Tag("cookie")
+        @Story("Cookie Preferences")
+        @Severity(SeverityLevel.CRITICAL)
+        @DisplayName("All Cookies headings should be visible in cookie preferences modal")
+        void testAllCookiesHeadingsVisible() {
+            homePage.open();
+            homePage.footer().clickCookiePreferences();
+            pageAssertions.assertVisible(homePage.footer().getPerformanceCookiesHeading());
+            pageAssertions.assertVisible(homePage.footer().getFunctionalCookiesHeading());
+            pageAssertions.assertVisible(homePage.footer().getStrictlyNecessaryCookiesHeading());
+            pageAssertions.assertVisible(homePage.footer().getTargetingCookiesHeading());   
+            logger.info("All Cookies headings verified successfully");
+        }
+
+        @Test
+        @Tags({@Tag("cookie"), @Tag("visual-verification")})
+        @Issue("IMH-CP-001")
+        @Flaky
+        @Story("Cookie Preferences")
+        @Severity(SeverityLevel.CRITICAL)
+        @DisplayName("Performance Cookies description should be visible in cookie preferences modal")
+        void testPerformanceCookiesDescriptionVisible() {
+            homePage.open();
+            homePage.footer().clickCookiePreferences();
+            homePage.footer().clickPerformanceCookies();
+            homePage.getPage().waitForTimeout(1000);
+            AllureUtils.attachScreenshotViaLifecycle(homePage.getPage(), "Performance Cookies Description");
+            pageAssertions.assertVisible(homePage.footer().getPerformanceCookiesDescription());
+        }
+
+        @Test
+        @Tags({@Tag("cookie"), @Tag("visual-verification")})
+        @Issue("IMH-CP-001")
+        @Flaky
+        @Story("Cookie Preferences")
+        @Severity(SeverityLevel.CRITICAL)
+        @DisplayName("Functional Cookies description should be visible in cookie preferences modal")
+        void testFunctionalCookiesDescriptionVisible() {
+            homePage.open();
+            homePage.footer().clickCookiePreferences();
+            homePage.footer().clickFunctionalCookies();
+            homePage.getPage().waitForTimeout(1000);
+            AllureUtils.attachScreenshotViaLifecycle(homePage.getPage(), "Functional Cookies Description");
+            pageAssertions.assertVisible(homePage.footer().getFunctionalCookiesDescription());
+        }
+
+        @Test
+        @Tags({@Tag("cookie"), @Tag("visual-verification")})
+        @Issue("IMH-CP-001")
+        @Flaky
+        @Story("Cookie Preferences")
+        @Severity(SeverityLevel.CRITICAL)
+        @DisplayName("Strictly Necessary Cookies description should be visible in cookie preferences modal")
+        void testStrictlyNecessaryCookiesDescriptionVisible() {
+            homePage.open();
+            homePage.footer().clickCookiePreferences();
+            homePage.footer().clickStrictlyNecessaryCookies();
+            homePage.getPage().waitForTimeout(1000);
+            AllureUtils.attachScreenshotViaLifecycle(homePage.getPage(), "Strictly Necessary Cookies Description");
+            pageAssertions.assertVisible(homePage.footer().getStrictlyNecessaryCookiesDescription());
+        }
+
+        @Test
+        @Tags({@Tag("cookie"), @Tag("visual-verification")})
+        @Issue("IMH-CP-001")
+        @Flaky
+        @Story("Cookie Preferences")
+        @Severity(SeverityLevel.CRITICAL)
+        @DisplayName("Targeting Cookies description should be visible in cookie preferences modal")
+        void testTargetingCookiesDescriptionVisible() {
+            homePage.open();
+            homePage.footer().clickCookiePreferences();
+            homePage.footer().clickTargetingCookies();
+            homePage.getPage().waitForTimeout(1000);
+            AllureUtils.attachScreenshotViaLifecycle(homePage.getPage(), "Targeting Cookies Description");
+            pageAssertions.assertVisible(homePage.footer().getTargetingCookiesDescription());
         }
     }
 }

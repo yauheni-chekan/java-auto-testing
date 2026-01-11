@@ -29,6 +29,18 @@ public class FooterComponent {
     private final Locator copyrightText;
     private final Locator termsOfServiceLink;
     private final Locator privacyPolicyLink;
+    // About Us
+    private final Locator cookiePreferencesLink;
+    // Cookie Preferences Modal
+    private final Locator cookiePreferencesModal;
+    private final Locator performanceCookiesHeading;
+    private final Locator performanceCookiesDescription;
+    private final Locator functionalCookiesHeading;
+    private final Locator functionalCookiesDescription;
+    private final Locator strictlyNecessaryCookiesHeading;
+    private final Locator strictlyNecessaryCookiesDescription;
+    private final Locator targetingCookiesHeading;
+    private final Locator targetingCookiesDescription;
 
     /**
      * Creates a new FooterComponent instance.
@@ -49,6 +61,20 @@ public class FooterComponent {
         this.copyrightText = bottomFooter.getByText("Copyright © 2002-");
         this.termsOfServiceLink = bottomFooter.getByRole(AriaRole.LINK, new Locator.GetByRoleOptions().setName("Terms of Service"));
         this.privacyPolicyLink = bottomFooter.getByRole(AriaRole.LINK, new Locator.GetByRoleOptions().setName("Privacy Policy"));
+
+        // About Us
+        this.cookiePreferencesLink = footerNavigation.locator("#ot-sdk-btn");
+
+        // Cookie Preferences Modal
+        this.cookiePreferencesModal = page.locator("#onetrust-pc-sdk");
+        this.performanceCookiesHeading = cookiePreferencesModal.locator("#ot-header-id-C0002");
+        this.performanceCookiesDescription = cookiePreferencesModal.locator("#ot-desc-id-C0002");
+        this.functionalCookiesHeading = cookiePreferencesModal.locator("#ot-header-id-C0003");
+        this.functionalCookiesDescription = cookiePreferencesModal.locator("#ot-desc-id-C0003");
+        this.strictlyNecessaryCookiesHeading = cookiePreferencesModal.locator("#ot-header-id-C0001");
+        this.strictlyNecessaryCookiesDescription = cookiePreferencesModal.locator("#ot-desc-id-C0001");
+        this.targetingCookiesHeading = cookiePreferencesModal.locator("#ot-header-id-C0004");
+        this.targetingCookiesDescription = cookiePreferencesModal.locator("#ot-desc-id-C0004");
     }
 
     // =========================================================================
@@ -104,6 +130,62 @@ public class FooterComponent {
         logger.info("Clicking Privacy Policy");
         privacyPolicyLink.scrollIntoViewIfNeeded();
         privacyPolicyLink.click();
+        WaitUtils.waitForDomContentLoaded(page);
+    }
+
+    /**
+     * Clicks on Cookie Preferences link.
+     */
+    @Step("Click Cookie Preferences")
+    public void clickCookiePreferences() {
+        logger.info("Clicking Cookie Preferences");
+        cookiePreferencesLink.scrollIntoViewIfNeeded();
+        cookiePreferencesLink.click();
+        WaitUtils.waitForDomContentLoaded(page);
+        WaitUtils.waitForVisible(cookiePreferencesModal);
+    }
+
+    /**
+     * Clicks on Performance Cookies heading.
+     */
+    @Step("Click Performance Cookies")
+    public void clickPerformanceCookies() {
+        logger.info("Clicking Performance Cookies");
+        performanceCookiesHeading.scrollIntoViewIfNeeded();
+        performanceCookiesHeading.click();
+        WaitUtils.waitForDomContentLoaded(page);
+    }
+
+    /**
+     * Clicks on Functional Cookies heading.
+     */
+    @Step("Click Functional Cookies")
+    public void clickFunctionalCookies() {
+        logger.info("Clicking Functional Cookies");
+        functionalCookiesHeading.scrollIntoViewIfNeeded();
+        functionalCookiesHeading.click();
+        WaitUtils.waitForDomContentLoaded(page);
+    }
+
+    /**
+     * Clicks on Strictly Necessary Cookies heading.
+     */
+    @Step("Click Strictly Necessary Cookies")
+    public void clickStrictlyNecessaryCookies() {
+        logger.info("Clicking Strictly Necessary Cookies");
+        strictlyNecessaryCookiesHeading.scrollIntoViewIfNeeded();
+        strictlyNecessaryCookiesHeading.click();
+        WaitUtils.waitForDomContentLoaded(page);
+    }
+
+    /**
+     * Clicks on Targeting Cookies heading.
+     */
+    @Step("Click Targeting Cookies")
+    public void clickTargetingCookies() {
+        logger.info("Clicking Targeting Cookies");
+        targetingCookiesHeading.scrollIntoViewIfNeeded();
+        targetingCookiesHeading.click();
         WaitUtils.waitForDomContentLoaded(page);
     }
 
@@ -177,5 +259,55 @@ public class FooterComponent {
     public Locator getSocialMediaLinks() {
         return socialMediaLinks;
     }
-}
 
+
+    /**
+     * Gets the Cookie Preferences modal locator.
+     *
+     * @return Cookie Preferences modal locator
+     */
+    public Locator getCookiePreferencesModal() {
+        return cookiePreferencesModal;
+    }
+
+    /**
+     * Gets the Cookie Preferences link locator.
+     *
+     * @return Cookie Preferences link locator
+     */
+    public Locator getCookiePreferencesLink() {
+        return cookiePreferencesLink;
+    }
+
+    public Locator getPerformanceCookiesHeading() {
+        return performanceCookiesHeading;
+    }
+
+    public Locator getPerformanceCookiesDescription() {
+        return performanceCookiesDescription;
+    }
+
+    public Locator getFunctionalCookiesHeading() {
+        return functionalCookiesHeading;
+    }
+
+    public Locator getFunctionalCookiesDescription() {
+        return functionalCookiesDescription;
+    }
+
+    public Locator getStrictlyNecessaryCookiesHeading() {
+        return strictlyNecessaryCookiesHeading;
+    }
+
+    public Locator getStrictlyNecessaryCookiesDescription() {
+        return strictlyNecessaryCookiesDescription;
+    }
+
+    public Locator getTargetingCookiesHeading() {
+        return targetingCookiesHeading;
+    }
+
+    public Locator getTargetingCookiesDescription() {
+        return targetingCookiesDescription;
+    }
+}

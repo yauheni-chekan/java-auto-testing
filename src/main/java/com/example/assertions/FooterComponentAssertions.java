@@ -25,4 +25,9 @@ public class FooterComponentAssertions {
         logger.debug("Asserting element contains text: {}", expectedText);
         assertThat(footerComponent.getCopyrightTextLocator()).containsText(expectedText);
     }
+
+    public void assertCookiePreferencesLinkVisible() {
+        logger.debug("Asserting cookie preferences link is visible");
+        assertThat(footerComponent.getCookiePreferencesLink()).isVisible();
+    }
 }

@@ -1,5 +1,7 @@
 package com.example.assertions;
 
+import java.time.Year;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -12,9 +14,11 @@ public class PricingPageAssertions {
     
     private static final Logger logger = LoggerFactory.getLogger(PricingPageAssertions.class);
     private final PricingPage pricingPage;
+    private final String currentYear;
 
     public PricingPageAssertions(PricingPage pricingPage) {
         this.pricingPage = pricingPage;
+        this.currentYear = String.valueOf(Year.now().getValue());
     }
 
 
@@ -24,7 +28,7 @@ public class PricingPageAssertions {
     }
 
     public void assertTitleIsCorrect() {
-        String expectedTitle = "Web Hosting Plans & Pricing 2025 | InMotion Hosting";
+        String expectedTitle = String.format("Web Hosting Plans & Pricing %s | InMotion Hosting", currentYear);
         logger.debug("Asserting page title is correct");
         assertThat(pricingPage.getPage()).hasTitle(expectedTitle);
     }

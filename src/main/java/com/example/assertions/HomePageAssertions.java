@@ -3,6 +3,8 @@ package com.example.assertions;
 import static com.microsoft.playwright.assertions.PlaywrightAssertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThat;
 
+import java.time.Year;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -24,10 +26,12 @@ public class HomePageAssertions {
     private static final Logger logger = LoggerFactory.getLogger(HomePageAssertions.class);
     private final HomePage homePage;
     private final FooterComponentAssertions footerComponentAssertions;
+    private final String currentYear;
 
     public HomePageAssertions(HomePage homePage) {
         this.homePage = homePage;
         this.footerComponentAssertions = new FooterComponentAssertions(homePage.footer());
+        this.currentYear = String.valueOf(Year.now().getValue());
     }
 
     /**
@@ -35,7 +39,7 @@ public class HomePageAssertions {
      *
      */
     public void assertTitleIsCorrect() {
-        String expectedTitle = "Best Web Hosting, VPS, Dedicated Servers for Business 2025 | InMotion Hosting";
+        String expectedTitle = String.format("Best Web Hosting, VPS, Dedicated Servers for Business %s | InMotion Hosting", currentYear);
         logger.debug("Asserting page title is correct");
         assertThat(homePage.getPage()).hasTitle(expectedTitle);
     }
@@ -62,7 +66,7 @@ public class HomePageAssertions {
         logger.debug("Asserting page contains footer");
         assertVisible(homePage.footer().getFooterNavigation());
         assertVisible(homePage.footer().getCopyrightTextLocator());
-        footerComponentAssertions.assertContainsText("Copyright © 2002-");
+        footerComponentAssertions.assertContainsText(String.format("Copyright © 2002-%s", currentYear));
     }
 
     /**
