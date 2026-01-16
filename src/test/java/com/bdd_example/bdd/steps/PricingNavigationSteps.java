@@ -17,30 +17,34 @@ public class PricingNavigationSteps extends BaseTest {
     private PricingPage pricingPage;
     private PricingPageAssertions pricingPageAssertions;
 
-    @And("I click the {string} link in the header")
-    @Step("I click the {string} link in the header")
-    public void iClickTheLinkInTheHeader(String linkName) {
+    // Note: "I click the {string} link in the header" step is handled by LoginNavigationSteps
+    // to avoid duplicate step definitions. This class handles Pricing-specific assertions.
+    
+    // This method is called after LoginNavigationSteps handles the click
+    private void initializePricingPage() {
         homePage = CommonSteps.sharedHomePage;
         if (homePage == null) {
             throw new IllegalStateException("HomePage not initialized. Please navigate to homepage first.");
         }
-        if ("Pricing".equalsIgnoreCase(linkName)) {
-            pricingPage = homePage.header().navigateToPricing();
-            pricingPageAssertions = new PricingPageAssertions(pricingPage);
-            logger.info("Clicked on Pricing link");
-        }
+        // Get pricing page from navigation - it should already be navigated by LoginNavigationSteps
+        pricingPage = new PricingPage();
+        pricingPageAssertions = new PricingPageAssertions(pricingPage);
     }
 
     @Then("I should be navigated to the Pricing page")
     @Step("I should be navigated to the Pricing page")
     public void iShouldBeNavigatedToThePricingPage() {
-        // Navigation is already done in the When step
+        // Navigation is handled by LoginNavigationSteps
+        initializePricingPage();
         logger.info("Navigated to Pricing page");
     }
 
     @And("the Pricing page should be loaded")
     @Step("the Pricing page should be loaded")
     public void thePricingPageShouldBeLoaded() {
+        if (pricingPageAssertions == null) {
+            initializePricingPage();
+        }
         pricingPageAssertions.assertPageIsLoaded();
         logger.info("Pricing page loaded successfully");
     }

@@ -2,6 +2,7 @@ package com.bdd_example.pages.components;
 
 import com.bdd_example.pages.LoginPage;
 import com.bdd_example.pages.PricingPage;
+import com.bdd_example.pages.SharedHostingPage;
 import com.bdd_example.utils.WaitUtils;
 import com.microsoft.playwright.Locator;
 import com.microsoft.playwright.Page;
@@ -35,6 +36,8 @@ public class HeaderComponent {
     private final Locator dedicatedServersDropdown;
     private final Locator wordPressHostingDropdown;
     private final Locator allHostingDropdown;
+    private final Locator allHostingDropdownMenu;
+    private final Locator sharedHostingOption;
     private final Locator servicesDropdown;
     private final Locator pricingLink;
 
@@ -51,14 +54,10 @@ public class HeaderComponent {
         this.page = page;
 
         // Initialize locators
-        // Locator header = page.locator("header#masthead > div#imh-main-menu");
-        Locator header = page.getByLabel("InMotion Hosting Main Menu");
-        Locator primaryNav = header.locator("div.primary-nav");
-        Locator navArea = header.locator("div#navbarNavDropdown ul.nav1").first();
-        Locator desktopLogo = header.locator("#navbarNavDropdown > ul.nav1 > a.desktop-logo").first();
-
-        this.headerContainer = header;
-        this.logo = desktopLogo;
+        this.headerContainer = page.getByLabel("InMotion Hosting Main Menu");
+        Locator navArea = headerContainer.locator("div#navbarNavDropdown ul.nav1").first();
+        Locator primaryNav = headerContainer.locator("div.primary-nav");
+        this.logo = page.getByRole(AriaRole.LINK, new Page.GetByRoleOptions().setName("InMotion Hosting Logo")).first();
 
         // Primary navigation
         this.resourcesDropdown = primaryNav.getByRole(AriaRole.BUTTON, new Locator.GetByRoleOptions().setName("Resources")).first();
@@ -69,7 +68,9 @@ public class HeaderComponent {
         this.vpsHostingLink = navArea.getByLabel("VPS Hosting").first();
         this.dedicatedServersDropdown = navArea.getByRole(AriaRole.BUTTON, new Locator.GetByRoleOptions().setName("Dedicated Servers")).first(); 
         this.wordPressHostingDropdown = navArea.getByRole(AriaRole.BUTTON, new Locator.GetByRoleOptions().setName("Hosting for WordPress")).first();
-        this.allHostingDropdown = navArea.getByRole(AriaRole.BUTTON, new Locator.GetByRoleOptions().setName("All Hosting")).first();
+        this.allHostingDropdown = page.getByRole(AriaRole.BUTTON, new Page.GetByRoleOptions().setName("All Hosting"));
+        this.allHostingDropdownMenu = navArea.getByLabel("All Hosting").nth(1);
+        this.sharedHostingOption = page.getByLabel("Shared Hosting", new Page.GetByLabelOptions().setExact(true));
         this.servicesDropdown = navArea.getByRole(AriaRole.BUTTON, new Locator.GetByRoleOptions().setName("Website Services")).first();
         this.pricingLink = navArea.getByRole(AriaRole.LINK, new Locator.GetByRoleOptions().setName("Pricing")).first();
         this.cartIcon = navArea.getByRole(AriaRole.LINK, new Locator.GetByRoleOptions().setName("Shopping Cart")).first();
@@ -182,6 +183,17 @@ public class HeaderComponent {
     }
 
     /**
+     * Navigates to Shared Hosting page.
+     */
+    @Step("Navigate to Shared Hosting")
+    public SharedHostingPage navigateToSharedHosting() {
+        logger.info("Navigating to Shared Hosting");
+        sharedHostingOption.click();
+        WaitUtils.waitForDomContentLoaded(page);
+        return new SharedHostingPage(page);
+    }
+
+    /**
      * Navigates to Services page.
      */
     @Step("Navigate to Services")
@@ -288,6 +300,45 @@ public class HeaderComponent {
         servicesDropdown.hover();
     }
 
+    /**
+     * Hovers over the Login link.
+     */
+    @Step("Hover over Login link")
+    public void hoverLogin() {
+        logger.debug("Hovering over Login link");
+        loginButton.hover();
+    }
+
+    /**
+     * Clicks the All Hosting dropdown to show the menu.
+     */
+    @Step("Click All Hosting dropdown")
+    public void clickAllHostingDropdown() {
+        logger.info("Clicking All Hosting dropdown");
+        allHostingDropdown.click();
+        // Wait for the Shared Hosting link to become visible
+        // Find all Shared Hosting links in the header and wait for one to be visible
+        Locator allSharedHostingLinks = headerContainer.getByRole(AriaRole.LINK, new Locator.GetByRoleOptions().setName("Shared Hosting"));
+        // Wait for at least one to be visible
+        allSharedHostingLinks.first().waitFor(new Locator.WaitForOptions().setState(com.microsoft.playwright.options.WaitForSelectorState.VISIBLE));
+    }
+
+    /**
+     * Selects Shared Hosting from the All Hosting dropdown menu.
+     *
+     * @return SharedHostingPage instance
+     */
+    @Step("Select Shared Hosting from All Hosting dropdown")
+    public SharedHostingPage selectSharedHostingFromAllHosting() {
+        logger.info("Selecting Shared Hosting from All Hosting dropdown");
+        // Find the visible Shared Hosting link - get all and click the first visible one
+        Locator allSharedHostingLinks = headerContainer.getByRole(AriaRole.LINK, new Locator.GetByRoleOptions().setName("Shared Hosting"));
+        // Click the first visible one (should be in the All Hosting dropdown)
+        allSharedHostingLinks.filter(new Locator.FilterOptions().setHasNotText("")).first().click();
+        WaitUtils.waitForDomContentLoaded(page);
+        return new SharedHostingPage(page);
+    }
+
     // =========================================================================
     // Element Getters for Assertions
     // =========================================================================
@@ -348,5 +399,23 @@ public class HeaderComponent {
 
     public Locator getPricingLink() {
         return pricingLink;
+    }
+
+    /**
+     * Gets the All Hosting dropdown locator.
+     *
+     * @return All Hosting dropdown locator
+     */
+    public Locator getAllHostingDropdown() {
+        return allHostingDropdown;
+    }
+
+    /**
+     * Gets the All Hosting dropdown menu locator.
+     *
+     * @return All Hosting dropdown menu locator
+     */
+    public Locator getAllHostingDropdownMenu() {
+        return allHostingDropdownMenu;
     }
 }
