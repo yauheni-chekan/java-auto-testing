@@ -54,7 +54,11 @@ class RelativePositionParameterizedTest {
         "0, 1, 2, 0, ONE_INTERSECTION, false",
 
         // 12. Degenerate segment (P1 = P2)
-        "0, 0, 0, 0, NO_INTERSECTION, false"
+        "0, 0, 0, 0, NO_INTERSECTION, false",
+
+        // 13. Degenerate segment (P1 = P2, x1=x2=1, y1=y2=1) - point ON line
+        // Point (1,1) satisfies: -3(1) + 5(1) - 2 = 0
+        "1, 1, 1, 1, SEGMENT_ON_LINE, false"
     })
     void testRelativePositionAndPerpendicularity(
             double x1, double y1, double x2, double y2, 
