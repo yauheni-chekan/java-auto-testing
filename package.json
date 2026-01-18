@@ -1,0 +1,5 @@
+{
+  "scripts": {
+    "report:serve": "allure serve target/allure-results"
+  }
+}
