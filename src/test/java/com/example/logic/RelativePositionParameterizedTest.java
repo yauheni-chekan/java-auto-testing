@@ -51,7 +51,10 @@ class RelativePositionParameterizedTest {
         
         // 11. Intersection + Not Perpendicular
         // P1(0,1), P2(2,0). Just an arbitrary crossing.
-        "0, 1, 2, 0, ONE_INTERSECTION, false"
+        "0, 1, 2, 0, ONE_INTERSECTION, false",
+
+        // 12. Degenerate segment (P1 = P2)
+        "0, 0, 0, 0, NO_INTERSECTION, false"
     })
     void testRelativePositionAndPerpendicularity(
             double x1, double y1, double x2, double y2, 

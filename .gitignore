@@ -33,3 +33,7 @@ target/
 .settings/
 .factorypath
 .DS_Store
+
+.allure/
+.cursor/
+node_modules/
