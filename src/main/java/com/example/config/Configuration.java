@@ -18,6 +18,15 @@ public final class Configuration {
     private static Configuration instance;
     private final Properties properties;
 
+    private static final String DEFAULT_BASE_URL = "https://www.inmotionhosting.com/";
+    private static final int DEFAULT_BROWSER_VIEWPORT_WIDTH = 1920;
+    private static final int DEFAULT_BROWSER_VIEWPORT_HEIGHT = 1080;
+    private static final int DEFAULT_BROWSER_SLOW_MO = 0;
+    private static final int DEFAULT_TIMEOUT_DEFAULT = 30000;
+    private static final int DEFAULT_TIMEOUT_NAVIGATION = 60000;
+    private static final int DEFAULT_TIMEOUT_ELEMENT = 10000;
+    private static final int DEFAULT_RETRY_COUNT = 0;
+
     private Configuration() {
         properties = new Properties();
         loadProperties();
@@ -140,7 +149,7 @@ public final class Configuration {
      * @return Base URL
      */
     public String getBaseUrl() {
-        return getProperty("base.url", "https://www.inmotionhosting.com/");
+        return getProperty("base.url", DEFAULT_BASE_URL);
     }
 
     /**
@@ -167,7 +176,7 @@ public final class Configuration {
      * @return Viewport width in pixels
      */
     public int getViewportWidth() {
-        return getIntProperty("browser.viewport.width", 1920);
+        return getIntProperty("browser.viewport.width", DEFAULT_BROWSER_VIEWPORT_WIDTH);
     }
 
     /**
@@ -176,7 +185,7 @@ public final class Configuration {
      * @return Viewport height in pixels
      */
     public int getViewportHeight() {
-        return getIntProperty("browser.viewport.height", 1080);
+        return getIntProperty("browser.viewport.height", DEFAULT_BROWSER_VIEWPORT_HEIGHT);
     }
 
     /**
@@ -185,7 +194,7 @@ public final class Configuration {
      * @return Slow motion delay
      */
     public int getSlowMo() {
-        return getIntProperty("browser.slow.mo", 0);
+        return getIntProperty("browser.slow.mo", DEFAULT_BROWSER_SLOW_MO);
     }
 
     /**
@@ -194,7 +203,7 @@ public final class Configuration {
      * @return Default timeout
      */
     public int getDefaultTimeout() {
-        return getIntProperty("timeout.default", 30000);
+        return getIntProperty("timeout.default", DEFAULT_TIMEOUT_DEFAULT);
     }
 
     /**
@@ -203,7 +212,7 @@ public final class Configuration {
      * @return Navigation timeout
      */
     public int getNavigationTimeout() {
-        return getIntProperty("timeout.navigation", 60000);
+        return getIntProperty("timeout.navigation", DEFAULT_TIMEOUT_NAVIGATION);
     }
 
     /**
@@ -212,7 +221,7 @@ public final class Configuration {
      * @return Element timeout
      */
     public int getElementTimeout() {
-        return getIntProperty("timeout.element", 10000);
+        return getIntProperty("timeout.element", DEFAULT_TIMEOUT_ELEMENT);
     }
 
     /**
@@ -257,6 +266,6 @@ public final class Configuration {
      * @return Retry count
      */
     public int getRetryCount() {
-        return getIntProperty("retry.count", 0);
+        return getIntProperty("retry.count", DEFAULT_RETRY_COUNT);
     }
 }
