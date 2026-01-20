@@ -13,8 +13,10 @@ public final class ApiConfig {
     private static final RequestSpecification REQUEST_SPEC = new RequestSpecBuilder()
             .setBaseUri(BASE_URI)
             .setContentType(ContentType.JSON)
-            .addFilter(new RequestLoggingFilter(LogDetail.ALL))
-            .addFilter(new ResponseLoggingFilter(LogDetail.ALL))
+            .addFilter(new RequestLoggingFilter(LogDetail.URI))
+            .addFilter(new RequestLoggingFilter(LogDetail.METHOD))
+            .addFilter(new RequestLoggingFilter(LogDetail.PARAMS))
+            .addFilter(new ResponseLoggingFilter(LogDetail.STATUS))
             .build();
 
     private ApiConfig() {

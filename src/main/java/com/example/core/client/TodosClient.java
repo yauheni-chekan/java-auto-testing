@@ -9,10 +9,10 @@ import org.slf4j.LoggerFactory;
 import static io.restassured.RestAssured.given;
 
 public class TodosClient {
-    private static final Logger LOGGER = LoggerFactory.getLogger(TodosClient.class);
+    private final Logger logger = LoggerFactory.getLogger(TodosClient.class);
 
     public Response getTodos() {
-        LOGGER.info("GET /todos");
+        logger.info("GET /todos");
         return given()
                 .spec(ApiConfig.requestSpec())
                 .when()
@@ -20,7 +20,7 @@ public class TodosClient {
     }
 
     public Response getTodoById(int id) {
-        LOGGER.info("GET /todos/{}", id);
+        logger.info("GET /todos/{}", id);
         return given()
                 .spec(ApiConfig.requestSpec())
                 .pathParam("id", id)
@@ -29,7 +29,7 @@ public class TodosClient {
     }
 
     public Response createTodo(Todo todo) {
-        LOGGER.info("POST /todos (valid payload)");
+        logger.info("POST /todos (valid payload)");
         return given()
                 .spec(ApiConfig.requestSpec())
                 .body(todo)
@@ -38,7 +38,7 @@ public class TodosClient {
     }
 
     public Response createTodoRaw(String rawJson) {
-        LOGGER.info("POST /todos (raw payload)");
+        logger.info("POST /todos (raw payload)");
         return given()
                 .spec(ApiConfig.requestSpec())
                 .body(rawJson)
