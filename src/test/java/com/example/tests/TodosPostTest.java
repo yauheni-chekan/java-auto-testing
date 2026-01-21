@@ -1,12 +1,17 @@
 package com.example.tests;
 
-import com.example.domain.Todo;
-import io.restassured.response.Response;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+
+import org.apache.http.HttpStatus;
+import org.junit.jupiter.api.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.junit.jupiter.api.Test;
 
-import static org.junit.jupiter.api.Assertions.*;
+import com.example.domain.Todo;
+
+import io.restassured.response.Response;
 
 public class TodosPostTest extends BaseApiTest {
     private final Logger logger = LoggerFactory.getLogger(TodosPostTest.class);
@@ -18,7 +23,7 @@ public class TodosPostTest extends BaseApiTest {
 
         Response response = todosClient.createTodo(request);
         logger.debug("Response: {}", response.body().asString());
-        assertEquals(201, response.statusCode());
+        assertEquals(HttpStatus.SC_CREATED, response.statusCode());
 
         Todo created = response.as(Todo.class);
         assertEquals(request.getUserId(), created.getUserId());
@@ -33,7 +38,7 @@ public class TodosPostTest extends BaseApiTest {
         logger.info("Starting postTodos_malformedJson_returnsServerError test");
         Response response = todosClient.createTodoRaw("{");
         logger.debug("Response: {}", response.body().asString());
-        assertEquals(500, response.statusCode());
+        assertEquals(HttpStatus.SC_INTERNAL_SERVER_ERROR, response.statusCode());
         assertFalse(response.body().asString().trim().isEmpty());
         logger.info("postTodos_malformedJson_returnsServerError test completed successfully");
     }

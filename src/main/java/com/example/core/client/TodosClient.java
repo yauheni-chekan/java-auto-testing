@@ -1,12 +1,14 @@
 package com.example.core.client;
 
-import com.example.core.ApiConfig;
-import com.example.domain.Todo;
-import io.restassured.response.Response;
+import static io.restassured.RestAssured.given;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import static io.restassured.RestAssured.given;
+import com.example.core.ApiConfig;
+import com.example.domain.Todo;
+
+import io.restassured.response.Response;
 
 public class TodosClient {
     private final Logger logger = LoggerFactory.getLogger(TodosClient.class);
